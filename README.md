@@ -1,7 +1,8 @@
 # Project Creator
 A Simple Program to Create projects written in GoLang using [bubbletea](https://github.com/charmbracelet/bubbletea/) for its Terminal UI
 
-![Showcase](showcase.mp4)
+
+https://user-images.githubusercontent.com/85793326/212573374-4d925130-30b0-49a3-b629-8f58398cd859.mp4
 
 
 # Using this
