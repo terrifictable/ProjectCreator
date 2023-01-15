@@ -25,7 +25,7 @@ type Languages struct {
 	Main struct {
 		Path string `json:"path,omitempty"`
 		Url  string `json:"url,omitempty"`
-	} `json:"ile,omitempty"`
+	} `json:"mainfile,omitempty"`
 	Dockerfile string `json:"dockerfile,omitempty"`
 	Makefile   string `json:"makefile,omitempty"`
 	Nixsh      string `json:"nix-shell,omitempty"`
@@ -135,7 +135,7 @@ func CreateProject(language_data []Languages, name, language string) error {
 			}
 			/* DOCKERFILE */
 
-			/* ile */
+			/* Mainfile */
 			if lang.Main.Url != "" {
 				content, err := GetFileFromGit(strings.Replace(lang.Main.Url, "<git>", GIT_HOST, -1))
 				if err != nil {
@@ -147,7 +147,7 @@ func CreateProject(language_data []Languages, name, language string) error {
 				os.Mkdir(name+"/"+path, 0755)
 				os.WriteFile(name+"/"+lang.Main.Path, content, 0755)
 			}
-			/* ile */
+			/* Mainfile */
 
 			/* Commons */
 			if lang.Commons != nil {
