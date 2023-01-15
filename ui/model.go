@@ -23,9 +23,9 @@ type model struct {
 	inputs  []textinput.Model
 	spinner spinner.Model
 
-	creating bool
-	done     bool
-	selected bool
+	creating    bool
+	selected    bool
+	invalidLang bool
 
 	focused int
 	err     error
@@ -66,7 +66,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, nil
 
 		case tea.KeyEnter:
-			if m.focused == len(m.inputs)-1 {
+			if m.focused == len(m.inputs)-1 && m.inputs[0].Value() != "" && m.inputs[1].Value() != "" {
 				m.creating = true
 
 				nameVal = m.inputs[0].Value()
@@ -88,6 +88,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		}
 
+		if m.focused == 1 {
+			m.invalidLang = false
+		}
+
 		for i := range m.inputs {
 			m.inputs[i].Blur()
 		}
@@ -100,7 +104,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, cmd
 
 	case createProjMsg:
-		return m, tea.Quit
+		if msg {
+			return m, tea.Quit
+		}
+		m.creating = false
+		m.invalidLang = true
 
 	case errMsg:
 		m.err = msg
@@ -137,17 +145,25 @@ func (m model) View() string {
 		helpText += "ctrl+c: exit"
 	}
 
+	errorText := ""
+	if m.invalidLang {
+		errorText = "Unknown Language"
+	}
+
 	return fmt.Sprintf(`
 %s
 
- %s
+%s
  %s
 
- %s  
+%s  
  %s
  
 %s 
 
+
+
+%s
 
 
 
@@ -160,6 +176,7 @@ func (m model) View() string {
 		inputStyle.Width(8).Render("Language"),
 		lipgloss.NewStyle().PaddingLeft(10).Render(m.inputs[language].View()),
 		helpStyle.Render(continueStyle.Render("Continue")),
+		errorStyle.Render(errorText),
 		helpStyle.Copy().PaddingLeft(2).Render(helpText),
 	) + "\n"
 }

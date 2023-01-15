@@ -23,11 +23,13 @@ const (
 	lightBlue = lipgloss.Color("#5cffff")
 	darkBlue  = lipgloss.Color("#252f8f")
 	darkGray  = lipgloss.Color("#1e1e1e")
+	red       = lipgloss.Color("#ec0e00")
 )
 
 var (
 	inputStyle    = lipgloss.NewStyle().Foreground(lightBlue).PaddingLeft(10)
 	helpStyle     = lipgloss.NewStyle().Foreground(darkGray).PaddingLeft(15)
+	errorStyle    = lipgloss.NewStyle().Foreground(red).PaddingLeft(12)
 	continueStyle = lipgloss.NewStyle().Foreground(darkGray).
 			PaddingLeft(1).
 			PaddingRight(1).
@@ -69,8 +71,8 @@ func NewModel() model {
 		err:      nil,
 		selected: true,
 
-		done:     false,
-		creating: false,
+		creating:    false,
+		invalidLang: false,
 
 		keymap: keymap{
 			tab: key.NewBinding(
