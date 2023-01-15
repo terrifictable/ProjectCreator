@@ -96,7 +96,7 @@ func (m model) View() string {
 			lipgloss.NewStyle().PaddingTop(2).PaddingLeft(10).Render(m.spinner.View()))
 	}
 
-	if m.focused == len(m.inputs)-1 && m.inputs[1].Value() != "" {
+	if m.focused == len(m.inputs)-1 && m.inputs[0].Value() != "" && m.inputs[1].Value() != "" {
 		continueStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#ffffff")).PaddingLeft(12)
 	} else {
 		continueStyle = lipgloss.NewStyle().Foreground(darkGray).PaddingLeft(12)
