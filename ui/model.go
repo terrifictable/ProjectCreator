@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"main/util"
 
+	"github.com/charmbracelet/bubbles/help"
+	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
@@ -11,15 +13,25 @@ import (
 )
 
 /* Types */
+type keymap struct {
+	tab        key.Binding
+	unselect   key.Binding
+	unsel_quit key.Binding
+	quit       key.Binding
+}
 type model struct {
 	inputs  []textinput.Model
 	spinner spinner.Model
 
 	creating bool
 	done     bool
+	selected bool
 
 	focused int
 	err     error
+
+	help   help.Model
+	keymap keymap
 }
 type createProjMsg bool
 
@@ -32,7 +44,7 @@ func (m model) Init() tea.Cmd {
 func createProj() tea.Msg {
 	err := util.NewCreateProject(nameVal, languageVal)
 	if err != nil {
-		panic(err)
+		return createProjMsg(false)
 	}
 
 	return createProjMsg(true)
@@ -44,6 +56,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.Type {
+		case tea.KeyEsc:
+			for i := range m.inputs {
+				if m.inputs[i].Focused() {
+					m.inputs[i].Blur()
+				}
+				m.selected = false
+			}
+			return m, nil
+
 		case tea.KeyEnter:
 			if m.focused == len(m.inputs)-1 {
 				m.creating = true
@@ -56,15 +77,22 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.nextInput()
 		case tea.KeyCtrlC:
 			return m, tea.Quit
+
 		case tea.KeyShiftTab, tea.KeyCtrlP:
 			m.prevInput()
 		case tea.KeyTab, tea.KeyCtrlN:
 			m.nextInput()
 		}
+
+		if !m.selected && msg.String() == "q" {
+			return m, tea.Quit
+		}
+
 		for i := range m.inputs {
 			m.inputs[i].Blur()
 		}
 		m.inputs[m.focused].Focus()
+		m.selected = true
 
 	case spinner.TickMsg:
 		var cmd tea.Cmd
@@ -97,10 +125,18 @@ func (m model) View() string {
 	}
 
 	if m.focused == len(m.inputs)-1 && m.inputs[0].Value() != "" && m.inputs[1].Value() != "" {
-		continueStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#ffffff")).PaddingLeft(12)
+		continueStyle = continueStyle.Copy().Foreground(lipgloss.Color("#ffffff"))
 	} else {
-		continueStyle = lipgloss.NewStyle().Foreground(darkGray).PaddingLeft(12)
+		continueStyle = continueStyle.Copy().Foreground(darkGray)
 	}
+
+	helpText := "tab: select next • return: submit • esc: unselect • "
+	if !m.selected {
+		helpText += "q: exit"
+	} else {
+		helpText += "ctrl+c: exit"
+	}
+
 	return fmt.Sprintf(`
 %s
 
@@ -110,14 +146,21 @@ func (m model) View() string {
  %s  
  %s
  
- %s 
+%s 
+
+
+
+
+
+%s
 `,
 		titleStyle.Render(util.GetLogo()),
 		inputStyle.Width(30).Render("Project Name"),
 		lipgloss.NewStyle().PaddingLeft(10).Render(m.inputs[name].View()),
 		inputStyle.Width(8).Render("Language"),
 		lipgloss.NewStyle().PaddingLeft(10).Render(m.inputs[language].View()),
-		continueStyle.Render("Continue ->"),
+		helpStyle.Render(continueStyle.Render("Continue")),
+		helpStyle.Copy().PaddingLeft(2).Render(helpText),
 	) + "\n"
 }
 

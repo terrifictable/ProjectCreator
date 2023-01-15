@@ -1,6 +1,8 @@
 package ui
 
 import (
+	"github.com/charmbracelet/bubbles/help"
+	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
@@ -25,8 +27,12 @@ const (
 
 var (
 	inputStyle    = lipgloss.NewStyle().Foreground(lightBlue).PaddingLeft(10)
-	continueStyle = lipgloss.NewStyle().Foreground(darkGray).PaddingLeft(12)
-	titleStyle    = lipgloss.NewStyle().Foreground(darkBlue).
+	helpStyle     = lipgloss.NewStyle().Foreground(darkGray).PaddingLeft(15)
+	continueStyle = lipgloss.NewStyle().Foreground(darkGray).
+			PaddingLeft(1).
+			PaddingRight(1).
+			BorderStyle(lipgloss.RoundedBorder())
+	titleStyle = lipgloss.NewStyle().Foreground(darkBlue).
 			PaddingLeft(2).
 			PaddingRight(2).
 			BorderStyle(lipgloss.RoundedBorder())
@@ -55,16 +61,39 @@ func NewModel() model {
 	spinner := spinner.New()
 	spinner.Style = lipgloss.NewStyle().Foreground(lipgloss.Color("63"))
 
-	return model{
+	m := model{
 		inputs:  inputs,
 		spinner: spinner,
 
-		focused: 0,
-		err:     nil,
+		focused:  0,
+		err:      nil,
+		selected: true,
 
 		done:     false,
 		creating: false,
+
+		keymap: keymap{
+			tab: key.NewBinding(
+				key.WithKeys("tab"),
+				key.WithHelp("tab", "select next • "),
+			),
+			unselect: key.NewBinding(
+				key.WithKeys("esc"),
+				key.WithHelp("esc", "unselect • "),
+			),
+			unsel_quit: key.NewBinding(
+				key.WithKeys("ctrl+c", "q"),
+				key.WithHelp("ctlr+c / q:", "exit"),
+			),
+			quit: key.NewBinding(
+				key.WithKeys("ctrl+c"),
+				key.WithHelp("ctrl+c:", "exit"),
+			),
+		},
+		help: help.NewModel(),
 	}
+
+	return m
 }
 
 func InitUI() error {
