@@ -48,7 +48,6 @@ func NewModel() model {
 
 	inputs[1] = textinput.New()
 	inputs[1].Placeholder = "Language"
-	inputs[1].Focus()
 	inputs[1].CharLimit = 20
 	inputs[1].Width = 30
 	inputs[1].Prompt = "┃ "
