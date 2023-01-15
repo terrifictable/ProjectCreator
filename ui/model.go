@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"main/util"
 
 	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/textinput"
@@ -9,7 +10,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-
+/* Types */
 type model struct {
 	inputs  []textinput.Model
 	spinner spinner.Model
@@ -22,15 +23,14 @@ type model struct {
 }
 type createProjMsg bool
 
-
-
+/* Types */
 
 func (m model) Init() tea.Cmd {
 	return tea.Batch(m.spinner.Tick, tea.EnterAltScreen)
 }
 
 func createProj() tea.Msg {
-	err := NewCreateProject(nameVal, languageVal)
+	err := util.NewCreateProject(nameVal, languageVal)
 	if err != nil {
 		panic(err)
 	}
@@ -92,7 +92,7 @@ func (m model) View() string {
 
  %s Creating Project
 `,
-			titleStyle.Render(GetLogo()),
+			titleStyle.Render(util.GetLogo()),
 			lipgloss.NewStyle().PaddingTop(2).PaddingLeft(10).Render(m.spinner.View()))
 	}
 	return fmt.Sprintf(`
@@ -106,7 +106,7 @@ func (m model) View() string {
  
  %s 
 `,
-		titleStyle.Render(GetLogo()),
+		titleStyle.Render(util.GetLogo()),
 		inputStyle.Width(30).Render("Project Name"),
 		lipgloss.NewStyle().PaddingLeft(10).Render(m.inputs[name].View()),
 		inputStyle.Width(8).Render("Language"),
@@ -121,9 +121,8 @@ func (m *model) nextInput() {
 
 func (m *model) prevInput() {
 	m.focused--
-	
+
 	if m.focused < 0 {
 		m.focused = len(m.inputs) - 1
 	}
 }
-

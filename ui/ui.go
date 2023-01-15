@@ -1,8 +1,6 @@
 package ui
 
 import (
-	"fmt"
-
 	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
@@ -39,7 +37,6 @@ var nameVal string
 
 /* Globals */
 
-
 func NewModel() model {
 	var inputs []textinput.Model = make([]textinput.Model, 2)
 	inputs[0] = textinput.New()
@@ -47,12 +44,14 @@ func NewModel() model {
 	inputs[0].Focus()
 	inputs[0].CharLimit = 20
 	inputs[0].Width = 30
+	inputs[0].Prompt = "┃ "
 
 	inputs[1] = textinput.New()
 	inputs[1].Placeholder = "Language"
 	inputs[1].Focus()
 	inputs[1].CharLimit = 20
 	inputs[1].Width = 30
+	inputs[1].Prompt = "┃ "
 
 	spinner := spinner.New()
 	spinner.Style = lipgloss.NewStyle().Foreground(lipgloss.Color("63"))
@@ -69,7 +68,7 @@ func NewModel() model {
 	}
 }
 
-func initUI() error {
+func InitUI() error {
 	p := tea.NewProgram(NewModel(), tea.WithAltScreen())
 	if _, err := p.Run(); err != nil {
 		return err
