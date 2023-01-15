@@ -1,0 +1,21 @@
+{
+    "githost": "192.168.2.133",
+    "langs": [
+        {
+            "names": ["cpp", "c++"],
+            "mainfile": {
+                "path": "src/main.cpp",
+                "url": "http://<git>/TerrificTable/Commons/raw/branch/main/templates/main.template.cpp"
+            },
+            "makefile": "http://<git>/TerrificTable/Commons/raw/branch/main/cpp/Makefile",
+            "nix-shell": "http://<git>/TerrificTable/Commons/raw/branch/main/templates/cxx.shell.nix",
+            
+            "commons": [
+                {
+                    "path": "src/common.h",
+                    "url": "http://<git>/TerrificTable/Commons/raw/branch/main/cpp/common.h"
+                }
+            ]
+        }
+    ]
+}
