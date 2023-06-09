@@ -1,0 +1,12 @@
+in: test
+out: test
+
+whatever:
+  something:
+    else:
+      hello: "a"
+    other:
+      - A
+      - B
+      - C
+
