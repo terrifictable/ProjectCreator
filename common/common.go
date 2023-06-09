@@ -3,14 +3,15 @@ package common
 import "fmt"
 
 const (
-	ANSI_RESET  = "\033[0m"
-	ANSI_GREY   = "\033[38;5;242m"
-	ANSI_HIGH   = "\033[38;5;159m"
-	ANSI_RED    = "\033[38;5;162m"
-	ANSI_GREEN  = "\033[38;5;49m"
-	ANSI_BLUE   = "\033[38;5;81m"
-	ANSI_ORANGE = "\033[38;5;215m"
-	ANSI_YELLOW = "\033[38;5;226m"
+	ANSI_RESET     = "\033[0m"
+	ANSI_GREY      = "\033[38;5;242m"
+	ANSI_HIGH      = "\033[38;5;159m"
+	ANSI_RED       = "\033[38;5;162m"
+	ANSI_GREEN     = "\033[38;5;49m"
+	ANSI_BLUE      = "\033[38;5;33m"
+	ANSI_LIGHTBLUE = "\033[38;5;51m"
+	ANSI_ORANGE    = "\033[38;5;215m"
+	ANSI_YELLOW    = "\033[38;5;226m"
 )
 
 var dbg = ""
@@ -35,8 +36,12 @@ func ERR(format string, a ...interface{}) {
 	fmt.Printf(" "+ANSI_GREY+"["+ANSI_RED+"-"+ANSI_GREY+"] "+ANSI_RESET+format+"\n", a...)
 }
 
+func CMD(format string, a ...interface{}) {
+	fmt.Printf(" "+ANSI_GREY+"["+ANSI_LIGHTBLUE+">"+ANSI_GREY+"] "+ANSI_RESET+format+"\n", a...)
+}
+
 func DBG(format string, a ...interface{}) {
-	if dbg != "" {
+	if dbg != "false" {
 		fmt.Printf(" "+ANSI_GREY+"["+ANSI_YELLOW+"~"+ANSI_GREY+"] "+ANSI_RESET+format+"\n", a...)
 	}
 }

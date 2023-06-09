@@ -1,12 +1,16 @@
-in: test
-out: test
+languages: ["c"]
 
-whatever:
-  something:
-    else:
-      hello: "a"
-    other:
-      - A
-      - B
-      - C
+# whether or not a git repo should be initialized
+git: false
 
+# The files to be downloaded (http or https urls)
+files:
+  Makefile: http://192.168.2.130/TerrificTable/Stuff/raw/branch/main/c_cpp/c.makefile
+  common.h: http://192.168.2.130/TerrificTable/Stuff/raw/branch/main/c_cpp/common.h
+  detect_debugger.c: http://192.168.2.130/TerrificTable/Stuff/raw/branch/main/c_cpp/detect_debugger.c
+  bin:
+    something: http://192.168.2.130/TerrificTable/Stuff/raw/branch/main/c_cpp/README.md
+
+# Commands to run right after creating project (and maybe initializing git)
+cmds:
+  - echo Hello World!
